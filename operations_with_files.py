@@ -15,12 +15,12 @@ def check_copy(element):
         el_list = [i for i in element.split('.')]
         el_name = ''
         for el in range(len(el_list) - 1):
-            print(el_list[el])
+            # print(el_list[el])
             el_name += el_list[el]
             if el <= len(el_list) - 2:
                 el_name += '.'
         el_index = el_list[-1]
-        print(el_name)
+        # print(el_name)
         while os.path.exists(f'{el_name}({i}).{el_index}'):
             i += 1
         free_name = f'{el_name}({i}).{el_index}'
