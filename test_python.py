@@ -45,9 +45,10 @@ def test_hypot(x, y):  # гипотенуза угла с катетами x, y
 @pytest.fixture(scope="function", params=[([1, 10, 20, -5, 3], [10, 20])])
 def param_test(request):
     return request.param
-def test_filter():
-    x_list = [1, 10, 20, -5, 3]
-    result_list = [10, 20]
+def test_filter(param_test):
+    # x_list = [1, 10, 20, -5, 3]
+    # result_list = [10, 20]
+    (x_list, result_list) = param_test
     assert list(filter(lambda y: True if y % 10 == 0 else False, x_list)) == result_list
 
 
