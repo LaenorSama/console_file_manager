@@ -2,6 +2,8 @@
 # а также для функций из библиотеки math: pi, sqrt, pow, hypot
 # Чем больше тестов на каждую функцию - тем лучше
 
+import pytest # для добавления параметров надо импортировать модуль
+
 import math
 
 
@@ -20,26 +22,33 @@ def test_sqrt():  # квадратный корень неотрицательн
         assert math.sqrt(source_list[i]) ** 2 == source_list[i]
         assert math.sqrt(source_list[i]) * math.sqrt(source_list[i]) == source_list[i]
 
+@pytest.mark.parametrize('x', [1, 10, 20, -5, 3])
+@pytest.mark.parametrize('y', [0, -2, 5, 10, 2])
+def test_pow(x, y):  # возведение в степень
+    # x_list = [1, 10, 20, -5, 3]
+    # y_list = [0, -2, 5, 10, 2]
+    # for x in x_list:
+    #     for y in y_list:
+    #         assert math.pow(x, y) == x ** y
+    assert math.pow(x, y) == x ** y
 
-def test_pow():  # возведение в степень
-    x_list = [1, 10, 20, -5, 3]
-    y_list = [0, -2, 5, 10, 2]
-    for x in x_list:
-        for y in y_list:
-            assert math.pow(x, y) == x ** y
+@pytest.mark.parametrize('x', [1, 2, 3])
+@pytest.mark.parametrize('y', [3, 4, 5])
+def test_hypot(x, y):  # гипотенуза угла с катетами x, y
+    # x_list = [1, 2, 3]
+    # y_list = [3, 4, 5]
+    # for x in x_list:
+    #     for y in y_list:
+    #         assert math.hypot(x, y) == math.sqrt(x * x + y * y)
+    assert math.hypot(x, y) == math.sqrt(x * x + y * y)
 
-
-def test_hypot():  # гипотенуза угла с катетами x, y
-    x_list = [1, 2, 3]
-    y_list = [3, 4, 5]
-    for x in x_list:
-        for y in y_list:
-            assert math.hypot(x, y) == math.sqrt(x * x + y * y)
-
-
-def test_filter():
-    x_list = [1, 10, 20, -5, 3]
-    result_list = [10, 20]
+@pytest.fixture(scope="function", params=[([1, 10, 20, -5, 3], [10, 20])])
+def param_test(request):
+    return request.param
+def test_filter(param_test):
+    # x_list = [1, 10, 20, -5, 3]
+    # result_list = [10, 20]
+    (x_list, result_list) = param_test
     assert list(filter(lambda y: True if y % 10 == 0 else False, x_list)) == result_list
 
 
