@@ -92,7 +92,7 @@ def change_wallet(user_wallet, FILE_WALLET):
 
 def init_wallet_menu():
     # указываем пути к файлам
-    FILE_WALLET = 'database/wallet'
+    FILE_WALLET = 'database/wallet' # если файл, есть то в нем должно быть число!!!
     FILE_ORDER = 'database/orders_list.csv'
 
     # текущее значение кошелька
@@ -101,6 +101,7 @@ def init_wallet_menu():
         user_wallet = int(f_wallet.read()) # забираем значение которое есть в файле
     else: # если файла нет, то создаем пустой файл
         with open(FILE_WALLET, 'w', encoding='utf-8') as f_wallet:
+            f_wallet.write('0')
             pass
         # и записываем 0 в переменную
         user_wallet = 0

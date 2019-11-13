@@ -1,6 +1,6 @@
 # в этом модуле функции на все элементы меню
 # нам потребутются
-import os, shutil
+import os, shutil, json
 
 
 # функция проверяет есть ли копия, если есть то увеличит номер копии и так пока не найдет последнюю
@@ -83,3 +83,26 @@ def copy_element_func(element):  # копируем элемент
         shutil.copy(element, new_element)
     else:
         shutil.copytree(element, new_element)
+
+def save_file_names_to_list(FILE_DIST = 'database/listdir.json'): # сохраняем содержимое папки в файл
+    files = []
+    dirs = []
+    for element in os.listdir():
+        if os.path.isfile(element):
+            files.append(element)
+        else:
+            dirs.append(element)
+    items_list = {'files': files, 'dirs': dirs}
+
+    with open('database/listdir.txt', 'w', encoding='utf-8') as f_list:
+         f_list.write(f'files:{files}\n')
+         f_list.write(f'dirs:{dirs}\n')
+
+    with open(FILE_DIST, 'w') as f_list:
+        json.dump(items_list, f_list)
+
+
+
+# проверяю в самом модуле
+if __name__ == '__main__':
+    save_file_names_to_list()
