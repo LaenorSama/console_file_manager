@@ -48,8 +48,11 @@ while True:
         operations_with_files.copy_element_func(element)
 
     elif choice == '4': # список файлов и папок
-        for element in os.listdir():
-            print(element, end=', ')
+        # for element in os.listdir():
+        #     print(element, end=', ')
+        # использую генератор списков
+        element_list = [element for element in os.listdir()]
+        print(element_list)
 
     elif choice == '5': # просмотреть только папки
         operations_with_files.print_dir()

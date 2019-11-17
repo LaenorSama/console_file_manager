@@ -1,1 +1,2 @@
-{"files": ["main.py", "new.txt.py", "operations_with_files.py", "test_filemanager.py", "test_python.py", "victory.py", "wallet.py"], "dirs": [".git", ".idea", ".pytest_cache", "database", "new folder", "venv", "__pycache__"]}
+files:['main.py', 'new.txt.py', 'operations_with_files.py', 'test_filemanager.py', 'test_python.py', 'victory.py', 'wallet.py']
+dirs:['.git', '.idea', '.pytest_cache', 'database', 'new folder', 'venv', '__pycache__']

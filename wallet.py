@@ -37,7 +37,12 @@ import os, sys, shutil
 
 # 1. пополнение счета
 def donate_func(user_wallet):
-    gold = int(input('Введите сумму на сколько пополнить счет:'))
+    while True:
+        try:
+            gold = int(input('Введите сумму на сколько пополнить счет:'))
+            break
+        except ValueError: # сработает если ввели не цифры
+            print('Введите число цифрами')
     # небольшая защита от дурака
     if gold >= 0:
         user_wallet += gold
@@ -128,8 +133,13 @@ def init_wallet_menu():
             pass
 
         elif choice == '3': # вывод списка операций
-            with open(FILE_ORDER, 'r', encoding='utf-8') as f_order:
-                print(f_order.read())
+            try:
+                with open(FILE_ORDER, 'r', encoding='utf-8') as f_order:
+                    print(f_order.read())
+            except FileNotFoundError: # будет исключение если файл и историей удалить
+                print('Файл истории операций не найден.')
+            except: # будет испключение в остальных исключительных случаях
+                print('Возникла неизвестная ошибка.')
             pass
 
         elif choice == '4': # выход из личного счета
