@@ -33,7 +33,7 @@
 
 Для реализации основного меню можно использовать пример ниже или написать свой
 """
-
+import os, sys, shutil
 
 # 1. пополнение счета
 def donate_func(user_wallet):
@@ -43,12 +43,11 @@ def donate_func(user_wallet):
         user_wallet += gold
         print('Пополнение успешно.')
         print('Возврат в основное меню.')
-        return user_wallet, ['пополнение', gold, 'остаток на счете', user_wallet]
+        return user_wallet, f'пополнение;NaN;{gold};остаток на счете;{user_wallet}'
     else:
         print('Ошибка!!! Нельзя пополнить на неположительное число!!!')
         print('Возврат в основное меню.')
-        return user_wallet, ['ОШИБКА ПОПОЛНЕНИЯ', gold, 'остаток на счете', user_wallet]
-
+        return user_wallet, f'ОШИБКА ПОПОЛНЕНИЯ;NaN;{gold};остаток на счете;{user_wallet}'
 
 # 2. покупка
 def purchase_func(user_wallet):
@@ -58,11 +57,11 @@ def purchase_func(user_wallet):
         user_wallet -= item_cost
         print('Покупка успешна!')
         print('Возврат в основное меню.')
-        return user_wallet, ['покупка', item_name, item_cost, 'остаток на счете', user_wallet]
+        return user_wallet, f'покупка;{item_name};{item_cost};остаток на счете;{user_wallet}'
     else:
         print('Нужно больше золота!')
         print('Возврат в основное меню.')
-        return user_wallet, ['ОТКАЗ В ПОКУПКЕ', item_name, item_cost, 'остаток на счете', user_wallet]
+        return user_wallet, f'ОТКАЗ В ПОКУПКЕ;{item_name};{item_cost};остаток на счете;{user_wallet}'
 
 
 # 3. выводим историю операций
@@ -79,7 +78,34 @@ def print_actions(action_list):
 
 # 4. выход из меню. тут обойдемся без функции
 
-def init_wallet_menu(user_wallet, action_list):
+
+# делаем функцию чтобы вести лог
+def action_log(action, FILE_ORDER):
+    with open(FILE_ORDER, 'a', encoding='utf-8') as f: # обращаемся к файлу для дозаписи
+        f.write(action) # дописываем в конец файла
+        f.write('\n')
+
+# функция для изменения значения кошелька
+def change_wallet(user_wallet, FILE_WALLET):
+    with open(FILE_WALLET, 'w', encoding='utf-8') as f_wallet:
+        f_wallet.write(str(user_wallet))
+
+def init_wallet_menu():
+    # указываем пути к файлам
+    FILE_WALLET = 'database/wallet' # если файл, есть то в нем должно быть число!!!
+    FILE_ORDER = 'database/orders_list.csv'
+
+    # текущее значение кошелька
+    if os.path.exists(FILE_WALLET): # если файл есть то считываем из него инфу
+        f_wallet = open(FILE_WALLET, 'r', encoding='utf-8') # обращаемся к файлу для чтения
+        user_wallet = int(f_wallet.read()) # забираем значение которое есть в файле
+    else: # если файла нет, то создаем пустой файл
+        with open(FILE_WALLET, 'w', encoding='utf-8') as f_wallet:
+            f_wallet.write('0')
+            pass
+        # и записываем 0 в переменную
+        user_wallet = 0
+
     while True:
         print()
         print(f'У вас на счете {user_wallet} золота.')
@@ -89,21 +115,29 @@ def init_wallet_menu(user_wallet, action_list):
         print('4. выход')
 
         choice = input('Выберите пункт меню:')
-        if choice == '1':
+        if choice == '1': # пополнение счета
             user_wallet, action = donate_func(user_wallet)
-            action_list.append(action)
-            # print(action_list)
+            change_wallet(user_wallet, FILE_WALLET)
+            action_log(action, FILE_ORDER)
             pass
-        elif choice == '2':
+
+        elif choice == '2': # покупка
             user_wallet, action = purchase_func(user_wallet)
-            action_list.append(action)
-            # print(action_list)
+            change_wallet(user_wallet, FILE_WALLET)
+            action_log(action, FILE_ORDER)
             pass
-        elif choice == '3':
-            print_actions(action_list)
+
+        elif choice == '3': # вывод списка операций
+            with open(FILE_ORDER, 'r', encoding='utf-8') as f_order:
+                print(f_order.read())
             pass
-        elif choice == '4':
-            return user_wallet, action_list
-            # break
-        else:
+
+        elif choice == '4': # выход из личного счета
+            return
+
+        else: # неверный пункт меню
             print('Неверный пункт меню')
+
+# проверяю в самом модуле
+if __name__ == '__main__':
+    init_wallet_menu()
