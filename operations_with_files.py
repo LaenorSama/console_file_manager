@@ -2,8 +2,17 @@
 # нам потребутются
 import os, shutil, json
 
+# функция декоратор будет добавлять смайлики :)
+# важно! декорируются только функции этого модуля!
+def smile_decor(f):
+    def inner(*args, **kwargs):
+        print('Ваш запрос выполнен с улыбкой :)')
+        result = f(*args, **kwargs)
+        return result
+    return inner
 
 # функция проверяет есть ли копия, если есть то увеличит номер копии и так пока не найдет последнюю
+@smile_decor
 def check_copy(element):
     i = 1
     if not os.path.isfile(element):
@@ -17,8 +26,11 @@ def check_copy(element):
         for el in range(len(el_list) - 1):
             # print(el_list[el])
             el_name += el_list[el]
-            if el <= len(el_list) - 2:
-                el_name += '.'
+            # if el <= len(el_list) - 2:
+            #     el_name += '.'
+
+            # использую тернарный оператор
+            el_name += '.' if (el <= len(el_list) - 2) else ''
         el_index = el_list[-1]
         # print(el_name)
         while os.path.exists(f'{el_name}({i}).{el_index}'):
@@ -28,6 +40,7 @@ def check_copy(element):
 
 
 # 1 пункт меню - создать папку
+@smile_decor
 def create_dir_func(dir_name):  # создаем папку
     # проверка ввел ли пользователь имя папки
     if dir_name == '':
@@ -46,33 +59,43 @@ def create_dir_func(dir_name):  # создаем папку
         # создаем папку
         os.mkdir(f'{dir_name}')
 
-
+@smile_decor
 def print_files():  # показываем только файлы
-    for element in os.listdir():
-        if os.path.isfile(element):
-            print(element, end=', ')
+    # for element in os.listdir():
+    #     if os.path.isfile(element):
+    #         print(element, end=', ')
 
-
+    # использую генератор списков
+    element_list = [element for element in os.listdir() if os.path.isfile(element)]
+    print(element_list)
+@smile_decor
 def print_dir():  # показываем только папки
-    for element in os.listdir():
-        if not os.path.isfile(element):
-            print(element, end=', ')
+    # for element in os.listdir():
+    #     if not os.path.isfile(element):
+    #         print(element, end=', ')
 
-
+    # использую генератор списков
+    element_list = [element for element in os.listdir() if not os.path.isfile(element)]
+    print(element_list)
+@smile_decor
 def del_element_func(element):  # удаляем элемент
     if not os.path.exists(element):
         print('Такого элемента не существует.')
         return
     if os.path.isfile(element):
         choice = input(f'Вы точно желаете удалить файл {element}? (y/n)')
-        if choice == 'y':
-            os.remove(element)
+        # if choice == 'y':
+        #     os.remove(element)
+        # использую тернатрый оператор
+        os.remove(element) if choice == 'y' else print('Файл НЕ удален!')
     else:
         choice = input(f'Вы точно желаете удалить папку {element}? (y/n)')
-        if choice == 'y':
-            shutil.rmtree(element)
+        # if choice == 'y':
+        #     shutil.rmtree(element)
+        # использую тернатрый оператор
+        shutil.rmtree(element) if choice == 'y' else print('Папка НЕ удалена!')
 
-
+@smile_decor
 def copy_element_func(element):  # копируем элемент
     if not os.path.exists(element):
         print('Такого элемента не существует.')
@@ -83,7 +106,7 @@ def copy_element_func(element):  # копируем элемент
         shutil.copy(element, new_element)
     else:
         shutil.copytree(element, new_element)
-
+@smile_decor
 def save_file_names_to_list(FILE_DIST = 'database/listdir.json'): # сохраняем содержимое папки в файл
     files = []
     dirs = []
